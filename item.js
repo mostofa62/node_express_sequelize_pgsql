@@ -53,8 +53,8 @@ exports.stockinout = async function(req, res){
 	    			item_id: item,
 	    			quantity: quantity,
 	    			op_type: optype,
-	    			created_at: moment().format('YYYY-MM-dd HH:mm:ss'),
-	    			updated_at: moment().format('YYYY-MM-dd HH:mm:ss')
+	    			created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+	    			updated_at: moment().format('YYYY-MM-DD HH:mm:ss')
 	  			}, { transaction: t });
 
 	    	
@@ -65,8 +65,8 @@ exports.stockinout = async function(req, res){
 	  					item_id:item,
 	  					balance_quantity:balance,
 	  					op_type: optype,
-	  					created_at: moment().format('YYYY-MM-dd HH:mm:ss'),
-	    				updated_at: moment().format('YYYY-MM-dd HH:mm:ss')
+	  					created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+	    				updated_at: moment().format('YYYY-MM-DD HH:mm:ss')
 	  			},{transaction:t});
 
 
@@ -75,7 +75,7 @@ exports.stockinout = async function(req, res){
 	  			await StockBalances.update({ 
   					balance_quantity: balance,
   					op_type:optype,
-  					updated_at: moment().format('YYYY-MM-dd HH:mm:ss')
+  					updated_at: moment().format('YYYY-MM-DD HH:mm:ss')
   				}, {
 
   				  transaction:t,
