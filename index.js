@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-
+const {sequelize} = require('./sequelize');
 
 var item = require('./item');
 
@@ -13,6 +13,15 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.post('/stockinout', item.stockinout);
+
+sequelize
+  .authenticate()
+  .then(function(err) {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(function (err) {
+    console.log('Unable to connect to the database:', err);
+  });
 
 
 app.listen(port, () => {
