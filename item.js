@@ -14,6 +14,7 @@ exports.stockinout = async function(req, res){
     const item = parseInt(req.body.item);
     const optype = parseInt(req.body.optype);
     const quantity = parseInt(req.body.quantity);
+    var location = req.body.location;
 
     //GLOBAL RETURN MESSAGE
     var return_data = {
@@ -23,10 +24,27 @@ exports.stockinout = async function(req, res){
     
     //CORE OPERATION STARTED
 
+    var location_top = await sequelize.query('SELECT id FROM locations ORDER BY order_by ASC limit 1',
+    {
+    	type: QueryTypes.SELECT	
+    });
+    //console.log(location_top+" req "+location);
+    if( typeof location === "undefined" && typeof location_top[0] !== "undefined"){
+    	location = location_top[0].id;
+    }
+    //location = parseInt(location);
+
+    //console.log('location:'+location_top);
+
+    //return_data['location'] = location_top[0];
+
     const stock_balance = await sequelize.query(
-	  'SELECT balance_quantity FROM stock_balances WHERE item_id = :item_id',
+	  'SELECT balance_quantity FROM stock_balances WHERE item_id = :item_id and location_id = :location_id',
 	  {
-	    replacements: { item_id: item },
+	    replacements: { 
+	    	item_id: item,
+	    	location_id:location 
+	    },
 	    type: QueryTypes.SELECT
 	  }
 	);
@@ -53,6 +71,7 @@ exports.stockinout = async function(req, res){
 	    			item_id: item,
 	    			quantity: quantity,
 	    			op_type: optype,
+	    			location_id:location,
 	    			created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
 	    			updated_at: moment().format('YYYY-MM-DD HH:mm:ss')
 	  			}, { transaction: t });
@@ -65,6 +84,7 @@ exports.stockinout = async function(req, res){
 	  					item_id:item,
 	  					balance_quantity:balance,
 	  					op_type: optype,
+	  					location_id:location,
 	  					created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
 	    				updated_at: moment().format('YYYY-MM-DD HH:mm:ss')
 	  			},{transaction:t});
@@ -80,7 +100,8 @@ exports.stockinout = async function(req, res){
 
   				  transaction:t,
 				  where: {
-				    item_id: item
+				    item_id: item,
+				    location_id:location,
 				  }
 				});
 

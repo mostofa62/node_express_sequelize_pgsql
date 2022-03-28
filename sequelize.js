@@ -23,6 +23,10 @@ const Stock = sequelize.define('Stock', {
         type: DataTypes.INTEGER,
         allowNull: true
       },
+      location_id:{
+        type: DataTypes.INTEGER,
+        allowNull: true
+      },
       quantity:{
         type:DataTypes.BIGINT,
         defaultValue:0,
@@ -59,6 +63,11 @@ console.log(Stock === sequelize.models.Stock); // true
 const StockBalances = sequelize.define('StockBalances', {
   	item_id:{
         type: Sequelize.INTEGER,
+        primaryKey: true,
+        allowNull: true
+    },
+    location_id:{
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: true
     },
