@@ -5,7 +5,7 @@ const port = 3000
 const {sequelize} = require('./sequelize');
 
 var item = require('./item');
-var ieinout = require('./income_expense');
+var ieinout = require('./income_exepense');
 
 module.exports = app;
 
