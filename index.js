@@ -4,7 +4,10 @@ const port = 3000
 
 const {sequelize} = require('./sequelize');
 
-var item = require('./item');
+
+var item = require('./modules/itemcategory/item')
+
+var stock = require('./stock');
 var ieinout = require('./income_exepense');
 
 module.exports = app;
@@ -13,8 +16,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.post('/stockinout', item.stockinout);
+//app.post('/item-create',item.create);
+
+
+app.post('/stockinout', stock.stockinout);
 app.post('/ieinout', ieinout.create);
+app.post('/ieinout-update', ieinout.update);
 
 sequelize
   .authenticate()
