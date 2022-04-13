@@ -11,6 +11,60 @@ const sequelize = new Sequelize('tinyerp', 'postgres', '1234', {
   }
 })
 // All Models
+//Items
+const Item = sequelize.define('Item', {
+  
+      id:{
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+
+        },
+        name:{ 
+          type:'VARCHAR(100)',          
+          allowNull: false
+
+        },
+        description:{
+          type:'TEXT',
+          allowNull: true
+
+        },
+        unit:{
+          type:'SMALLINT',
+          allowNull:true
+        },
+        sku:{ 
+          type:'VARCHAR(65)',          
+          allowNull: true
+
+        },
+        is_activated:{
+          type:DataTypes.BOOLEAN,
+          allowNull:false,
+          defaultValue: false
+
+        },
+        user_id:{
+          type:DataTypes.INTEGER,        
+          allowNull:true
+        },
+        created_at: {
+          type: DataTypes.DATE, 
+          //defaultValue: Sequelize.literal("now()"),
+          allowNull: true
+        },
+        updated_at: {
+          type: DataTypes.DATE,
+          //defaultValue: Sequelize.literal("now()"),
+          allowNull: true
+        },
+
+}, {
+  tableName: 'items',
+  timestamps: false
+
+});
 //stock models
 const Stock = sequelize.define('Stock', {
   

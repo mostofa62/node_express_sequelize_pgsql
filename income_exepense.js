@@ -212,21 +212,34 @@ exports.update = async function(req, res){
 	var previous_amount = parseInt(account_transaction.amount);	
 	
 	if(previous_account_id == account){
-		balance = (previous_optype == optype) && optype == 2 ?  
-		(( balance +  previous_amount) - amount): (( balance +  previous_amount) + amount)		
+
+		/*balance = (previous_optype == optype) && optype == 2 ?  
+		(( balance +  previous_amount) - amount): (( balance +  previous_amount) + amount);*/
+		balance = optype == 1 ? balance + amount : balance - amount;			
+
 	}
 	else{
-
-		previous_balance = previous_balance - previous_amount;
+		var v = previous_balance;
+		if(previous_amount >  previous_balance){
+			if( previous_balance < 0 ){
+				previous_balance = previous_amount - Math.abs(previous_balance);
+			}else{
+				previous_balance = previous_optype == 1? previous_amount - previous_balance
+			: previous_amount + previous_balance;
+			}
+				
+		}else {
+			previous_balance = previous_optype == 1? previous_balance - previous_amount : previous_balance + previous_amount;
+		}
+		
 		balance = optype == 1 ? balance + amount : balance - amount;
-
 	}
 
-	res.send({'balance':balance, 'previous_balance':previous_balance});
+	//res.send({'balance':balance,'op_type':previous_optype,'a_v':v,'previous_amount':account, 'previous_balance':previous_balance});
 
-	/*
-
-
+	
+	
+	
 	//console.log(balance);
 
 	var method = optype == 1 ? 10: 11; // 10 income, 11 expense, 12 purchase, 13 sales
@@ -279,10 +292,6 @@ exports.update = async function(req, res){
 			});
 
 		}else{
-
-			//balance = optype == 1 ? balance + amount : balance - amount;			
-
-	    	//create or update account balances
 	    	
 	    	if( typeof account_balance[0] === "undefined" ){
 	    		
@@ -311,11 +320,22 @@ exports.update = async function(req, res){
 				});
 
 	    	}
+	    	//update previous
+	    	await AccountBalances.update({ 
+						balance_amount: previous_balance,
+						op_type:optype,
+						method:method,
+						updated_at: moment().format('YYYY-MM-DD HH:mm:ss')
+				}, {
+
+					transaction:t,
+					where: {
+					    account_id: previous_account_id
+				}
+			});
 	    	
 
     	}
-
-    	
 
     	await t.commit();
 
@@ -333,7 +353,8 @@ exports.update = async function(req, res){
     }
 
     res.send(return_data);
-    */
+    
+    
 
 
 

@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 3001
 
 const {sequelize} = require('./sequelize');
 
@@ -22,6 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/stockinout', stock.stockinout);
 app.post('/ieinout', ieinout.create);
 app.post('/ieinout-update', ieinout.update);
+
+app.get('/item',item.index);
 
 sequelize
   .authenticate()
