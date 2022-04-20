@@ -62,8 +62,11 @@ const Item = sequelize.define('Item', {
 
 }, {
   tableName: 'items',
-  timestamps: false
-
+  timestamps: true,
+  createdAt: 'created_at',
+  updatedAt:'updated_at',
+  paranoid: true,
+  deletedAt: 'deleted_at'
 });
 //stock models
 const Stock = sequelize.define('Stock', {
@@ -343,6 +346,7 @@ const IncomeExpense = sequelize.define('IncomeExpense', {
 
 module.exports = {
 	sequelize,
+  Item,
 	Stock,
 	StockBalances,
   AccountBalances,
