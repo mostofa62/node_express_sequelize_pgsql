@@ -14,11 +14,14 @@ const itemSchema =  {
     custom: {
       options: (value, { req, location, path }) => {
           return Item.findOne({
-              where: { sku: value }
+              where: { sku: value },
+              paranoid: false
           }).then(data => {
               //console.log(data.id);
+              //console.log(req.body.id);
+              //console.log(data.id == req.body.id);
               if ( (data !== null && typeof req.body.id === "undefined") 
-              || ( data!==null && req.body.id !== data.id )) {                                  
+              || ( data!== null && req.body.id != data.id )) {                                  
                 
                 return Promise.reject('Sku('+value+') must be unique for each product!!!')
               }
