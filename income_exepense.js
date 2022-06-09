@@ -10,7 +10,8 @@ exports.create = async function(req, res){
 	//REUQEST DATA
     const category = parseInt(req.body.category); // income / expense category
     const optype = parseInt(req.body.optype); // 1 for income, 2 for expense
-    const amount = parseInt(req.body.amount);
+    const amount = parseFloat(parseFloat(req.body.amount).toFixed(2));
+	//console.log('new float amount'+amount);
     var account = req.body.account;
 
     //GLOBAL RETURN MESSAGE
@@ -41,19 +42,18 @@ exports.create = async function(req, res){
 	  }
 	);
 
-	console.log(account_balance);
+	//console.log(account_balance);
 
 
-	var balance = typeof account_balance[0] === "undefined" ? 0 : parseInt(account_balance[0].balance_amount);
-
-
+	var balance = typeof account_balance[0] === "undefined" ? 0 : parseFloat(account_balance[0].balance_amount).toFixed(2);
+	balance = parseFloat(balance);
 
 	balance = optype == 1 ? balance+amount : balance - amount;
 
 	console.log(balance);
 
 	var method = optype == 1 ? 10: 11; // 10 income, 11 expense, 12 purchase, 13 sales
-	console.log(method);
+	//console.log(method);
 	//transaction for insert and balance
     const t = await sequelize.transaction();
 
@@ -141,12 +141,13 @@ exports.update = async function(req, res){
     const {sequelize, AccountBalances ,AccountTransactions, IncomeExpense} = require('./sequelize');
     const { QueryTypes } = require('sequelize');
     var moment = require('moment');
+	const comp_counter = 1000;
 
 	//REUQEST DATA
 	const id = parseInt(req.body.id);
     const category = parseInt(req.body.category); // income / expense category
     const optype = parseInt(req.body.optype); // 1 for income, 2 for expense
-    const amount = parseInt(req.body.amount);
+    const amount = parseFloat(parseFloat(req.body.amount).toFixed(2));
     var account = req.body.account;
 
     //GLOBAL RETURN MESSAGE
@@ -162,6 +163,8 @@ exports.update = async function(req, res){
     	return_data['msg'] = 'nodatafound';
     	res.send(return_data);
     }
+
+	//console.log('IE '+income_expense);
 
     const account_transaction = await AccountTransactions.findByPk(income_expense.t_id);
 	if (account_transaction === null) {
@@ -202,14 +205,18 @@ exports.update = async function(req, res){
 		);
 
 		var previous_balance = typeof previous_account_balance[0] === "undefined" ? 
-	0 : parseInt(previous_account_balance[0].balance_amount);
+	0 : previous_account_balance[0].balance_amount;
+		previous_balance = parseFloat(previous_balance);
 
 	}
+	
 
 	var balance = typeof account_balance[0] === "undefined" ? 
-	0 : parseInt(account_balance[0].balance_amount);	
+	0 : account_balance[0].balance_amount;	
+	balance = parseFloat(balance);
 	
-	var previous_amount = parseInt(account_transaction.amount);	
+	var previous_amount = account_transaction.amount;
+		
 	
 	if(previous_account_id == account){
 
@@ -219,8 +226,14 @@ exports.update = async function(req, res){
 
 	}
 	else{
+		console.log('pa'+previous_amount);
+		console.log('pb'+previous_balance);
 		var v = previous_balance;
-		if(previous_amount >  previous_balance){
+		if( 
+			Math.round( previous_amount * comp_counter) 
+		>  Math.round(previous_balance * comp_counter)
+		){
+			console.log('working pa > pb');
 			if( previous_balance < 0 ){
 				previous_balance = previous_amount - Math.abs(previous_balance);
 			}else{
@@ -229,10 +242,14 @@ exports.update = async function(req, res){
 			}
 				
 		}else {
+			console.log('working pa < pb');
 			previous_balance = previous_optype == 1? previous_balance - previous_amount : previous_balance + previous_amount;
+			previous_balance = parseFloat(parseFloat(previous_balance).toFixed(2));
+			console.log('pb'+previous_balance);
 		}
 		
 		balance = optype == 1 ? balance + amount : balance - amount;
+		console.log('balance'+balance);
 	}
 
 	//res.send({'balance':balance,'op_type':previous_optype,'a_v':v,'previous_amount':account, 'previous_balance':previous_balance});
@@ -240,11 +257,12 @@ exports.update = async function(req, res){
 	
 	
 	
-	//console.log(balance);
+	//console.log('balance on update'+balance);
 
 	var method = optype == 1 ? 10: 11; // 10 income, 11 expense, 12 purchase, 13 sales
 	//console.log(method);
 	//transaction for insert and balance
+	
     const t = await sequelize.transaction();
 
     try{
@@ -351,7 +369,7 @@ exports.update = async function(req, res){
         return_data['error'] = error;
 
     }
-
+	
     res.send(return_data);
     
     

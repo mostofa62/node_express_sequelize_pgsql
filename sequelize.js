@@ -213,7 +213,7 @@ const AccountBalances = sequelize.define('AccountBalances', {
         allowNull: true
       },      
       balance_amount:{
-        type:DataTypes.BIGINT,
+        type:DataTypes.FLOAT(10, 2),
         defaultValue:0,
         allowNull:false
       },
@@ -260,7 +260,7 @@ const AccountTransactions = sequelize.define('AccountTransactions', {
         allowNull: true
       },      
       amount:{
-        type:DataTypes.BIGINT,
+        type:DataTypes.FLOAT(10, 2),
         defaultValue:0,
         allowNull:false
       },
