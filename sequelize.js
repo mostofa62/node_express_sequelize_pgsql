@@ -1,8 +1,16 @@
 const { Sequelize , DataTypes } = require('sequelize')
-const sequelize = new Sequelize('tinyerp', 'postgres', '1234', {
-  host: 'localhost',
+require('dotenv').config()
+
+const hostname = process.env.DB_P_HOST;
+const database = process.env.DB_P;
+const user = process.env.DB_P_USER;
+const password = process.env.DB_P_PASSWORD;
+const port = process.env.DB_P_PORT;
+
+const sequelize = new Sequelize(database, user, password, {
+  host: hostname,
   dialect: 'postgres',
-  port:5432,
+  port:port,
   pool: {
     max: 10,
     min: 0,
